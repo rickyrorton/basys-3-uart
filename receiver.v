@@ -25,7 +25,7 @@ module RxUART(
     input reset,
     input RxD,
     output reg [7:0] RxData,
-    output reg load
+    output reg done
     );
     
     reg shift;
@@ -71,7 +71,7 @@ module RxUART(
         clear_bitcounter <= 0;
         inc_bitcounter <= 0;
         nextstate <= 0;
-        load <= 0;
+        done <= 0;
         case (state)
             0:begin
                 if (RxD) begin
@@ -89,7 +89,7 @@ module RxUART(
                     if (bit_counter == div_bit -1) begin
                         nextstate <= 0;
                         RxData <= rxshift_reg[8:1];
-                        load <= 1;
+                        done <= 1;
                     end
                     inc_bitcounter <= 1;
                     clear_samplecounter <= 1;
