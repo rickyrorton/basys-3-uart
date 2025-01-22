@@ -44,7 +44,7 @@ module RxUART(
     parameter div_bit = 10;
 
     always @(posedge clk) begin
-        if(reset)begin
+        if(!reset)begin
             state <= 0;
             bit_counter <= 0;
             baudrate_counter <= 0;

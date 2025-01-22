@@ -25,7 +25,8 @@ module TxUART(
     input [7:0] data,
     input transmit,
     input reset,
-    output reg TxD
+    output reg TxD,
+    output reg transmit_ready
     );
 
     reg [3:0] bit_counter;
@@ -44,7 +45,7 @@ module TxUART(
     parameter div_bit = 10;
 
     always @(posedge clk) begin
-        if (reset) begin
+        if (!reset) begin
             state <= 0;
             bit_counter <= 0;
             baudrate_counter <=0;
@@ -70,6 +71,7 @@ module TxUART(
         shift <= 0;
         clear <= 0;
         TxD <= 1;
+        transmit_ready <= 1;
         case (state)
             0:begin
                 if (transmit) begin
@@ -77,6 +79,7 @@ module TxUART(
                     load <= 1;
                     shift <= 0;
                     clear <= 0;
+                    transmit_ready <= 0;
                 end else begin
                     next_state <= 0;
                     TxD <= 1;         
@@ -90,7 +93,8 @@ module TxUART(
                 end else begin
                     next_state <= 1;
                     TxD <= shiftright_register[0];
-                    shift <= 1;                
+                    shift <= 1; 
+                    transmit_ready <= 0;                
                 end
             end
             default: next_state <= 0;
